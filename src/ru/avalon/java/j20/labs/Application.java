@@ -1,6 +1,5 @@
 package ru.avalon.java.j20.labs;
 
-import ru.avalon.java.j20.labs.frames.Calculator;
 import ru.avalon.java.j20.labs.frames.ColorPicker;
 
 import javax.swing.*;
