@@ -27,7 +27,7 @@ public class ColorPicker extends AbstractFrame {
     private JPanel colorPanel = new JPanel();
 
     private JSlider redSlider = new JSlider();
-    private JLabel redLabel = new JLabel("RED:");
+    private JLabel redLabel = new JLabel("Red:");
 
     private JSlider greenSlider = new JSlider();
     private JLabel greenLabel = new JLabel("Green:");
