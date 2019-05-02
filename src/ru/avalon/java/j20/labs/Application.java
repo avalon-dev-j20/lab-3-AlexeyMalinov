@@ -1,7 +1,5 @@
 package ru.avalon.java.j20.labs;
 
-import ru.avalon.java.j20.labs.core.Calculator;
-import ru.avalon.java.j20.labs.core.Operation;
 import ru.avalon.java.j20.labs.frames.ColorPicker;
 import ru.avalon.java.j20.labs.frames.GuiForCalculator;
 

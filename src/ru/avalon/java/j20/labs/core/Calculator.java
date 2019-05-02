@@ -3,6 +3,12 @@ package ru.avalon.java.j20.labs.core;
 /**
  * Представление о калькуляторе выполняющим арифметические действия
  * над аргументами имеющими тип Double
+ * <p>
+ * <ol>
+ * <li>argument1 - первый аргумент
+ * <li>argument2 - второй аргумент
+ * <li>operation - арифметическая операция
+ * </ol>
  */
 public class Calculator {
     private Double argument1;

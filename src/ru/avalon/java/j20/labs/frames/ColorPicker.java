@@ -12,6 +12,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * Представление об окне выбора палитры цветов
+ * <p>
+ * Окну палитры цветов характеры следующие объекты:
+ * <ol>
+ * <li> controlPanel - панель регулировки цветов;
+ * <li> colorPanel - панель вывода цвета;
+ * <li> redSlider - регулировка оттенков красного цвета в палитре;
+ * <li> greenSlider - регулировка оттенков зеленого цвета в палитре;
+ * <li> blueSlider - регулировка оттенков синего цвета в палитре;
+ * <li> clipboard - буфер обмена
+ * </ol>
+ */
 public class ColorPicker extends AbstractFrame {
     /**
      * Слуштель событий создаваемых мышкой
@@ -49,6 +62,9 @@ public class ColorPicker extends AbstractFrame {
     public static final int START_SLIDER_POSITION = 125;
     public static final int BORDER_LINE_THICKNESS = 10;
 
+    /**
+     * Метод создающий все объекты окна при его открытии
+     */
     @Override
     protected void onCreate() {
         setTitle(TITLE);
@@ -66,6 +82,11 @@ public class ColorPicker extends AbstractFrame {
         addMouseListener(listener);
     }
 
+    /**
+     * Создает панель вывода цвета
+     *
+     * @return
+     */
     private JPanel createColorPanel() {
         colorPanel.setLayout(new BorderLayout());
         updateColor();
@@ -74,10 +95,18 @@ public class ColorPicker extends AbstractFrame {
         return colorPanel;
     }
 
+    /**
+     * Обновление выводимого цвета
+     */
     private void updateColor() {
         colorPanel.setBackground(new Color(redSlider.getValue(), greenSlider.getValue(), blueSlider.getValue()));
     }
 
+    /**
+     * Создание панель регулировки цветов
+     *
+     * @return
+     */
     private JPanel createControlPanel() {
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
         controlPanel.add(createPanelForOneParameter(redLabel, redSlider));
@@ -86,6 +115,13 @@ public class ColorPicker extends AbstractFrame {
         return controlPanel;
     }
 
+    /**
+     * Содание панели для одного регулируемого параметра
+     *
+     * @param label
+     * @param slider
+     * @return
+     */
     private JPanel createPanelForOneParameter(JLabel label, JSlider slider) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -100,6 +136,11 @@ public class ColorPicker extends AbstractFrame {
     }
 
 
+    /**
+     * Создает ползунок
+     *
+     * @return
+     */
     private JSlider createSlider() {
         JSlider slider = new JSlider(SLIDER_MIN_VALUE, SLIDER_MAX_VALUE);
         slider.setPaintTicks(true);
@@ -111,10 +152,18 @@ public class ColorPicker extends AbstractFrame {
         return slider;
     }
 
+    /**
+     * Определяет действия при изменении положении ползунка
+     *
+     * @param e
+     */
     private void onSliderChange(ChangeEvent e) {
         updateColor();
     }
 
+    /**
+     * Обновляет всплывающую подсказку
+     */
     private void updateToolTip() {
         Integer red = colorPanel.getBackground().getRed();
         Integer green = colorPanel.getBackground().getGreen();
@@ -124,6 +173,11 @@ public class ColorPicker extends AbstractFrame {
         copyToClipboard(hex);
     }
 
+    /**
+     * Копирует текст в буфер обмена
+     *
+     * @param text
+     */
     private void copyToClipboard(String text) {
         StringSelection selection = new StringSelection(text);
         clipboard.setContents(selection, selection);

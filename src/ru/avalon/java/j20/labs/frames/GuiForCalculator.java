@@ -1,6 +1,7 @@
 package ru.avalon.java.j20.labs.frames;
 
 import ru.avalon.java.j20.labs.core.Calculator;
+import ru.avalon.java.j20.labs.core.DoubleNumberBuilder;
 import ru.avalon.java.j20.labs.core.NumberBuilder;
 import ru.avalon.java.j20.labs.core.Operation;
 import ru.avalon.java.ui.AbstractFrame;
@@ -8,15 +9,45 @@ import ru.avalon.java.ui.AbstractFrame;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Представление о графическом интерфейсе калькулятора
+ * <p>
+ * Графический интерфейс имеет следующие основные элементы:
+ * <ol> calculator - калькулятор который непосредственно выполняет все вычисления;
+ * <li> numberBuilder - строитель чисел позволяющий построить;
+ * <li> numberButtons - кнопки набора цифр;
+ * <li> operationButtons - кнопка выбора операции;
+ * <li> separatorButton - кнопка разделителя;
+ * <li> equallyButton - кнопка подсчета результата;
+ * <li> resetButton - кнопка сброса;
+ * <li> label - отображение текущего результата;
+ * <li> clipboard - буфер обмена
+ * </ol>
+ */
 public class GuiForCalculator extends AbstractFrame {
 
+    /**
+     * Слушатель событий позволяющий обработать изменение размер окна.
+     * Создан в связи с тем, что метод setMaximumSize() не работает.
+     * К сожалению даже с данной реализацией наблюдаются проблемы с зависанием окна.
+     * Хотя само ограничение работает.
+     */
     private class ComponentEventListener extends ComponentAdapter {
+
+        /**
+         * {@inheritDoc}
+         *
+         * @param e
+         */
         @Override
         public void componentResized(ComponentEvent e) {
             int width = getWidth();
@@ -36,7 +67,7 @@ public class GuiForCalculator extends AbstractFrame {
     }
 
     private Calculator calculator = new Calculator();
-    private NumberBuilder numberBuilder = new NumberBuilder();
+    private NumberBuilder<Double> numberBuilder = new DoubleNumberBuilder();
 
     private JButton[] numberButtons = new JButton[10];
     private List<JButton> operationButtons = new ArrayList<>();
@@ -46,6 +77,9 @@ public class GuiForCalculator extends AbstractFrame {
     private JButton resetButton = new JButton("CE");
 
     private JLabel label = new JLabel();
+
+    private Toolkit toolkit = Toolkit.getDefaultToolkit();
+    private Clipboard clipboard = toolkit.getSystemClipboard();
 
     private boolean resultIsNotObtained = true;
 
@@ -62,6 +96,9 @@ public class GuiForCalculator extends AbstractFrame {
     public static final int BUTTON_LABEL_FONT_SIZE = 20;
     public static final String START_DIGIT = "0";
 
+    /**
+     * Метод создающий все объекты окна при его открытии
+     */
     @Override
     protected void onCreate() {
         initializeNumberButton(numberButtons);
@@ -87,30 +124,55 @@ public class GuiForCalculator extends AbstractFrame {
         add(createSingleLinePanel(equallyButton));
     }
 
+    /**
+     * Настраивает отображение текущего результата вычисления
+     *
+     * @param label
+     */
     private void customizeLabel(JLabel label) {
-        label.setText(START_DIGIT);
+        updateResult(START_DIGIT);
         label.setVerticalAlignment(JLabel.BOTTOM);
         label.setHorizontalAlignment(JLabel.RIGHT);
         label.setFont(new Font(null, Font.BOLD, DIGITS_FONT_SIZE));
     }
 
+    /**
+     * Инициализирует массив кнопок цифр
+     *
+     * @param buttons
+     */
     private void initializeNumberButton(JButton[] buttons) {
         for (int i = 0; i < 10; i++) {
             buttons[i] = new JButton(Integer.toString(i));
         }
     }
 
+    /**
+     * Инициализирует список доступных операций
+     *
+     * @param buttons
+     */
     private void initializeOperationButton(List<JButton> buttons) {
         for (Operation operation : Operation.values()) {
             buttons.add(new JButton(operation.getTitle()));
         }
     }
 
+    /**
+     * Определяет действия выполняемые при нажатии на кнопку c цифрами или разделителем.
+     *
+     * @param e
+     */
     private void onNumberButtonClick(ActionEvent e) {
         numberBuilder.append(e.getActionCommand());
-        label.setText(numberBuilder.toString());
+        updateResult(numberBuilder.toString());
     }
 
+    /**
+     * Определяет действия выполняемые при нажатии на кнопку с арифметической операцией.
+     *
+     * @param e
+     */
     private void onOperationButtonClick(ActionEvent e) {
         calculate();
         for (Operation operation : Operation.values()) {
@@ -121,26 +183,42 @@ public class GuiForCalculator extends AbstractFrame {
         resultIsNotObtained = true;
     }
 
+    /**
+     * Определяет действия выполняемые при нажатии на кнопку вычисления результата
+     *
+     * @param e
+     */
     private void onEquallyButton(ActionEvent e) {
         resultIsNotObtained = true;
         calculate();
     }
 
+    /**
+     * Вычисляет результат
+     */
     private void calculate() {
         if (resultIsNotObtained) {
             setCalculatorArguments();
-            label.setText(calculator.calculate());
+            updateResult(calculator.calculate());
         }
         resultIsNotObtained = false;
     }
 
+    /**
+     * Определяет действия выполняемые при нажатии на кнопку сброса всех предыдущих вычислений
+     *
+     * @param e
+     */
     private void onResetButton(ActionEvent e) {
         resultIsNotObtained = true;
         calculator.reset();
         numberBuilder.delete();
-        label.setText(START_DIGIT);
+        updateResult(START_DIGIT);
     }
 
+    /**
+     * Задает значение аргументов
+     */
     private void setCalculatorArguments() {
         if (numberBuilder.isEmpty()) return;
         if (calculator.getArgument1() == null) {
@@ -151,6 +229,9 @@ public class GuiForCalculator extends AbstractFrame {
         numberBuilder.delete();
     }
 
+    /**
+     * Задает слушателей для всех кнопок калькулятора
+     */
     private void setListenersForButtons() {
         for (JButton button : numberButtons) {
             button.addActionListener(this::onNumberButtonClick);
@@ -163,6 +244,12 @@ public class GuiForCalculator extends AbstractFrame {
         resetButton.addActionListener(this::onResetButton);
     }
 
+    /**
+     * Создает однострочную панель из компонент передаваемых на вход
+     *
+     * @param components
+     * @return
+     */
     private JPanel createSingleLinePanel(Component... components) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(1, components.length, GRIDLAYOUT_VERTICAL_INDENT, GRIDLAYOUT_HORIZONTAL_INDENT));
@@ -171,5 +258,25 @@ public class GuiForCalculator extends AbstractFrame {
             panel.add(comp);
         }
         return panel;
+    }
+
+    /**
+     * Копирует текст в буфер обмена
+     *
+     * @param text
+     */
+    private void copyToClipboard(String text) {
+        StringSelection selection = new StringSelection(text);
+        clipboard.setContents(selection, selection);
+    }
+
+    /**
+     * Обновляет выводимый результат вычисления
+     *
+     * @param text
+     */
+    private void updateResult(String text) {
+        label.setText(text);
+        copyToClipboard(text);
     }
 }

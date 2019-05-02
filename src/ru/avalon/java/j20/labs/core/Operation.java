@@ -1,5 +1,8 @@
 package ru.avalon.java.j20.labs.core;
 
+/**
+ * Перечисление всех доступных операций калькулятора
+ */
 public enum Operation {
     PLUS("+"),
     MINUS("-"),
