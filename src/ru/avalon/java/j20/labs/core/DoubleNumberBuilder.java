@@ -25,7 +25,7 @@ public class DoubleNumberBuilder implements NumberBuilder<Double> {
         if (isDigit(text)) {
             addDigit(text);
             empty = false;
-        } else if (isSeparator(text) && !hasSeparator) {
+        } else if (!hasSeparator && isSeparator(text)) {
             exponent = -1d;
             hasSeparator = true;
             empty = false;

@@ -81,7 +81,7 @@ public class GuiForCalculator extends AbstractFrame {
     private Toolkit toolkit = Toolkit.getDefaultToolkit();
     private Clipboard clipboard = toolkit.getSystemClipboard();
 
-    private boolean resultIsNotObtained = true;
+    private boolean resultObtained = false;
 
     public static final int GRIDLAYOUT_VERTICAL_INDENT = 10;
     public static final int GRIDLAYOUT_HORIZONTAL_INDENT = 10;
@@ -180,7 +180,7 @@ public class GuiForCalculator extends AbstractFrame {
                 calculator.setOperation(operation);
             }
         }
-        resultIsNotObtained = true;
+        resultObtained = false;
     }
 
     /**
@@ -189,7 +189,7 @@ public class GuiForCalculator extends AbstractFrame {
      * @param e
      */
     private void onEquallyButton(ActionEvent e) {
-        resultIsNotObtained = true;
+        resultObtained = false;
         calculate();
     }
 
@@ -197,11 +197,10 @@ public class GuiForCalculator extends AbstractFrame {
      * Вычисляет результат
      */
     private void calculate() {
-        if (resultIsNotObtained) {
-            setCalculatorArguments();
-            updateResult(calculator.calculate());
-        }
-        resultIsNotObtained = false;
+        if (resultObtained) return;
+        setCalculatorArguments();
+        updateResult(calculator.calculate());
+        resultObtained = true;
     }
 
     /**
@@ -210,7 +209,7 @@ public class GuiForCalculator extends AbstractFrame {
      * @param e
      */
     private void onResetButton(ActionEvent e) {
-        resultIsNotObtained = true;
+        resultObtained = false;
         calculator.reset();
         numberBuilder.delete();
         updateResult(START_DIGIT);
