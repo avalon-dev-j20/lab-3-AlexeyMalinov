@@ -50,19 +50,9 @@ public class GuiForCalculator extends AbstractFrame {
          */
         @Override
         public void componentResized(ComponentEvent e) {
-            int width = getWidth();
-            int height = getHeight();
-            if (width < MIN_WINDOW_WIDTH) {
-                width = MIN_WINDOW_WIDTH;
-            } else if (width > MAX_WINDOW_WIDTH) {
-                width = MAX_WINDOW_WIDTH;
-            }
-            if (height < MIN_WINDOW_HEIGHT) {
-                height = MIN_WINDOW_HEIGHT;
-            } else if (height >= MAX_WINDOW_HEIGHT) {
-                height = MAX_WINDOW_HEIGHT;
-            }
-            setSize(width, height);
+            setSize(Math.max(Math.min(getWidth(), MAX_WINDOW_WIDTH), MIN_WINDOW_WIDTH),
+                    Math.max(Math.min(getHeight(), MAX_WINDOW_HEIGHT), MIN_WINDOW_HEIGHT)
+            );
         }
     }
 
