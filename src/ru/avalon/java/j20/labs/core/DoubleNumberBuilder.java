@@ -21,7 +21,7 @@ public class DoubleNumberBuilder implements NumberBuilder<Double> {
      * @param text
      */
     @Override
-    public void append(String text) {
+    public NumberBuilder append(String text) {
         if (isDigit(text)) {
             addDigit(text);
             empty = false;
@@ -30,6 +30,7 @@ public class DoubleNumberBuilder implements NumberBuilder<Double> {
             hasSeparator = true;
             empty = false;
         }
+        return this;
     }
 
 
