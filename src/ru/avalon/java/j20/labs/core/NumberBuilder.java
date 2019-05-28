@@ -8,7 +8,7 @@ public interface NumberBuilder<E extends Number> {
     /**
      * Добавляет элемент в строитель числа
      */
-    void append(String digit);
+    NumberBuilder append(String digit);
 
     /**
      * Очищает строитель от всех ранее добавленных элементов
